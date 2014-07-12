@@ -8,13 +8,15 @@
 
 #include <iostream>
 #include <string>
+#include <sstream>
 #include <fstream>
+#include <vector>
 #include "LexicalAnalyzer.h"
+#include "parser.h"
 
 using namespace std;
 
 // function to return enum values as strings.
-
 string tokenizer(int token) {
     switch (token) {
         case SPACE:  return "SPACE";
@@ -39,25 +41,29 @@ string tokenizer(int token) {
 
 int main (int argc, char *argv[])
 {
-    //ifstream inputFile("/Users/birdman/Documents/Project1/Project1/input.txt");
-    //ofstream outputFile("/Users/birdman/Documents/Project1/Project1/output.txt");
-    ifstream inputFile(argv[1]);
-    ofstream outputFile(argv[2]);
+    ifstream inputFile("/Users/birdman/Documents/Project2/Project2/input.txt");
+    ofstream outputFile("/Users/birdman/Documents/Project2/Project2/output.txt");
+    //ifstream inputFile(argv[1]);
+    //ofstream outputFile(argv[2]);
     string line;
 
         int token=SPACE;
         int linecount = 0;
         int tokencount = 0;
-        
-        //  Use getline to handle the code line by line which will make it easy to get the line numbers
+        vector<LexAn> tokenlist;
+    
+        //  Use getline to handle the input line by line which will make it easy to get the line numbers
     
         LexAn *LA;
+        parser *PA;
     
         while(getline(inputFile, line)) {
             
             linecount++;
         
-            LA = new LexAn(line);
+            LA = new LexAn(line, linecount);
+            
+            
             
             //  keeps reading in characters until the endline STOP token appears
             
@@ -79,16 +85,31 @@ int main (int argc, char *argv[])
                     return 0;
                 }
                 else {
-                    outputFile << "(" << tokenizer(token) << ",\"" << LA->lexeme << "\"," << linecount << ")" << endl;
+                    outputFile << "(" << tokenizer(token) << ",\"" << LA->get_token_value() << "\"," << linecount << ")" << endl;
+                    
+                    // add object to token vector
+                    
+                    LA->get_token_type();
+                    LA->get_token_value();
+                    LA->get_line_number();
+                    
+                    tokenlist.push_back(*LA);
                 }
             }
             token = 0; //resets the token so that the getline while loop moves to the next line.
             delete LA; //frees the memory blocks so there arent memory leaks.
         }
         outputFile << "Total Tokens = " << tokencount - linecount << endl;
-    
+    PA = new parser(tokenlist);
+   
+    try {
+        PA->parse();
     }
-
+    catch (string e){
+        cout << "Failure!"<<endl;
+        cout << "   " << e << endl;
+    }
+}
 
 
 

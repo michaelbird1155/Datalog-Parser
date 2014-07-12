@@ -11,4 +11,17 @@
 
 #include <iostream>
 
+class predicate {
+    
+public:
+    predicate();
+    ~predicate();
+    
+private:
+    
+};
+
+
+
+
 #endif /* defined(__Project2__Predicate__) */

@@ -11,4 +11,15 @@
 
 #include <iostream>
 
+class rule{
+    
+public:
+    
+    rule();
+    ~rule();
+    
+private:
+
+};
+
 #endif /* defined(__Project2__Rule__) */

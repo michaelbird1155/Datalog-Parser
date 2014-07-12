@@ -7,3 +7,8 @@
 //
 
 #include "Rule.h"
+
+rule::rule() {};
+
+rule::~rule() {};
+    

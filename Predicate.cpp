@@ -7,3 +7,7 @@
 //
 
 #include "Predicate.h"
+
+predicate::predicate() {}
+
+predicate::~predicate() {}
