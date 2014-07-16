@@ -10,5 +10,25 @@
 #define __Project2__Parameter__
 
 #include <iostream>
+#include <vector>
 
+using namespace std;
+
+class Parameter {
+    
+public:
+    
+    Parameter();
+    ~Parameter();
+    
+    string toString();
+    string add_domain(string domain);
+    void clear();
+    
+private:
+    
+    vector<string> domains;
+
+    
+};
 #endif /* defined(__Project2__Parameter__) */

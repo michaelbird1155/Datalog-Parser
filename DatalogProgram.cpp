@@ -7,3 +7,52 @@
 //
 
 #include "DatalogProgram.h"
+#include <sstream>
+
+
+DataLog::DataLog() {};
+
+DataLog::~DataLog() {};
+
+void DataLog::add_to_schemes(Predicate &schemes) {
+    schemes_vector.push_back(schemes);
+}
+void DataLog::add_to_facts(Predicate &facts) {
+    facts_vector.push_back(facts);
+}
+void DataLog::add_to_rules(Rule &rules) {
+    rules_vector.push_back(rules);
+}
+void DataLog::add_to_queries(Predicate &queries) {
+    queries_vector.push_back(queries);
+}
+void DataLog::add_to_domains(Parameter &domains) {
+    domains_vector.push_back(domains);
+}
+string DataLog::toString() {
+    stringstream final;
+    final << "Schemes(";
+    final << schemes_vector.size() << "):" << endl;
+    for(auto schemes : schemes_vector)
+        final << "  " << schemes.toString() <<endl;
+    final << "Facts(";
+    final << facts_vector.size() << "):" << endl;
+    for(auto facts : facts_vector)
+        final << "  " << facts.toString() << endl;
+    
+    final << "Rules(";
+    final << rules_vector.size() << "):" << endl;
+    for(auto rules : rules_vector)
+        final << "  " << rules.toString()<< endl;
+    
+    final << "Queries(";
+    final << queries_vector.size()-1 << "):" << endl;
+    queries_vector.pop_back();
+    for(auto queries : queries_vector)
+        final << "  " << queries.toString() <<endl;
+    final << domains_vector.back().toString() << endl;
+   // final << Par.toString();
+    cout << final.str();
+    return final.str();
+}
+

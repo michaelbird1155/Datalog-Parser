@@ -14,7 +14,9 @@
 #include <vector>
 #include "LexicalAnalyzer.h"
 #include "Predicate.h"
+#include "DatalogProgram.h"
 #include "Rule.h"
+#include "Parameter.h"
 
 using namespace std;
 
@@ -50,21 +52,26 @@ using namespace std;
  <Parameter>       ->  String | Identifier
  */
 
-
+//vector<predicate> schemes;
 
 class parser {
     
 public:
 
 	parser(vector<LexAn> &tokenlist);
-	virtual ~parser();
+	~parser();
     void parse();
     void get_token_type();
+    string get_token_value();
+    void update_token();
     string current_token_type;
-    int index;
-    
+    string current_token_value;
+    int index=0;
+    Predicate P;
+    DataLog D;
+    Rule R;
+    Parameter Par;
 
-    
     
 private:
 
@@ -78,12 +85,12 @@ private:
     void rule();
     void querylist();
     void query();
+    void predicatelist();
     void predicate();
     void parameterlist();
     void parameter();
 
     vector<LexAn> &tokenlist;
-    
 };
 
 #endif /* defined(__Project2__parser__) */

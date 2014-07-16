@@ -125,24 +125,24 @@ int LexAn::rule1() {
     }
     
     if (lexeme == "Queries") {
-        token_type = "QUERIES";
-        return QUERIES;
+        token_type = QUERIES;
+        return token_type;
     }
     if (lexeme == "Schemes") {
-        token_type = "SCHEMES";
-        return SCHEMES;
+        token_type = SCHEMES;
+        return token_type;
     }
     if (lexeme == "Rules") {
-        token_type = "RULES";
-        return RULES;
+        token_type = RULES;
+        return token_type;
     }
     if (lexeme == "Facts") {
-        token_type = "FACTS";
-        return FACTS;
+        token_type = FACTS;
+        return token_type;
     }
     else {
-        token_type = "ID";
-        return ID;
+        token_type = ID;
+        return token_type;
     }
 }
 
@@ -157,8 +157,8 @@ int LexAn::rule2() {
     lexeme.erase( 0, 1 ); // erase the first character
     if (lexeme.back() == 39) {
         lexeme.erase( lexeme.size() - 1 ); // erase the last character
-        token_type = "STRING";
-        return STRING;
+        token_type = STRING;
+        return token_type;
     }
     else
         return ERROR;
@@ -173,8 +173,8 @@ int LexAn::rule3() {
     if (lexeme == "\n")
         return SPACE;
     else {
-        token_type = "ID";
-        return ID;
+        token_type = ID;
+        return token_type;
     }
 }
 
@@ -182,7 +182,6 @@ int LexAn::lex()
 {
     
     lexeme="";
-    token_type="";
     
     while (char_class == SPACE)   //  moves to the next character if there is a space. Does not add to the lexeme
         get_char();
@@ -190,12 +189,12 @@ int LexAn::lex()
     if (char_class == ERROR) {    //  simply throws an error if the character isnt recognized
         add_char();
         get_char();
-        token_type = "ERROR";
-        return ERROR;
+        token_type = ERROR;
+        return token_type;
     }
     if (char_class == STOP) {      //  when line reaches the end, it produces a STOP token
-        token_type = "STOP";
-        return STOP;
+        token_type = STOP;
+        return token_type;
     }
     switch (char_class) {         // switch statement for the other character classes.
         case LETTER:
@@ -210,45 +209,45 @@ int LexAn::lex()
                 add_char();
                 get_char();
             }
-            token_type = "INTEGER";
-            return INTEGER;
+            token_type = INTEGER;
+            return token_type;
             break;
         case PLUS_CODE:
             add_char();
             get_char();
-            token_type = "ERROR";
-            return PLUS_CODE;
+            token_type = ERROR;
+            return token_type;
             break;
         case COMMA:
             add_char();
             get_char();
-            token_type = "COMMA";
-            return COMMA;
+            token_type = COMMA;
+            return token_type;
             break;
         case PERIOD:
             add_char();
             get_char();
-            token_type = "PERIOD";
-            return PERIOD;
+            token_type = PERIOD;
+            return token_type;
             break;
         case Q_MARK:
             add_char();
             get_char();
-            token_type = "Q_MARK";
-            return Q_MARK;
+            token_type = Q_MARK;
+            return token_type;
             
             break;
         case LEFT_PAREN:
             add_char();
             get_char();
-            token_type = "LEFT_PAREN";
-            return LEFT_PAREN;
+            token_type = LEFT_PAREN;
+            return token_type;
             break;
         case RIGHT_PAREN:
             add_char();
             get_char();
-            token_type = "RIGHT_PAREN";
-            return RIGHT_PAREN;
+            token_type = RIGHT_PAREN;
+            return token_type;
             break;
         case COLON:
             add_char();
@@ -258,70 +257,84 @@ int LexAn::lex()
                 get_char();
             }
             if (lexeme == ":-") {
-                token_type = "COLON_DASH";
-                return COLON_DASH;
+                token_type = COLON_DASH;
+                return token_type;
             }
             else {
-                token_type = "COLON";
-                return COLON;
+                token_type = COLON;
+                return token_type;
             }
             break;
         case DASH:
             add_char();
             get_char();
-            token_type = "DASH";
-            return DASH;
+            token_type = DASH;
+            return token_type;
             break;
         case COLON_DASH:
             add_char();
             get_char();
-            token_type = "COLON_DASH";
-            return COLON_DASH;
+            token_type = COLON_DASH;
+            return token_type;
             break;
         case SEMI_COLON:
             add_char();
             get_char();
-            token_type = "ERROR";
-            return ERROR;
+            token_type = ERROR;
+            return token_type;
             break;
         case COMMENT:
             add_char();
             get_char();
-            token_type = "STOP";
-            return STOP;
+            token_type = STOP;
+            return token_type;
             break;
         case QUOTATION:
             add_char();
             get_char();
             return rule2();
-            //return STRING;
             break;
         case BACK_SLASH:
-            add_char() ;
+            add_char();
             get_char();
             return rule3();
             break;
         case UNDERSCORE:
-            add_char() ;
+            add_char();
             get_char();
-            token_type = "ERROR";
-            return ERROR;
+            token_type = ERROR;
+            return token_type;
             break;
         default:
-            token_type = "ERROR";
-            return ERROR;
-    } 
-    
+            token_type = ERROR;
+            return token_type;
+    }
+}
+string LexAn::get_token_type() {
+    switch (token_type) {
+        case SPACE:  return "SPACE";
+        case ERROR:  return "ERROR";
+        case STOP:  return "STOP";
+        case COMMA:  return "COMMA";
+        case PERIOD:  return "PERIOD";
+        case Q_MARK:  return "Q_MARK";
+        case LEFT_PAREN:  return "LEFT_PAREN";
+        case RIGHT_PAREN:  return "RIGHT_PAREN";
+        case COLON:  return "COLON";
+        case COLON_DASH:  return "COLON_DASH";
+        case SCHEMES:  return "SCHEMES";
+        case FACTS:  return "FACTS";
+        case RULES:  return "RULES";
+        case QUERIES:  return "QUERIES";
+        case ID:  return "ID";
+        case STRING:  return "STRING";
+        default:  return "ERROR";
+    }
 }
 string LexAn::get_token_value() {
     return lexeme;
 }
-string LexAn::get_token_type() {
-    return token_type;
-}
-void LexAn::line_number(int linecount) {
-    int line = linecount;
-}
 int LexAn::get_line_number() {
     return line;
 }
+

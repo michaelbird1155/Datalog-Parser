@@ -10,15 +10,31 @@
 #define __Project2__Rule__
 
 #include <iostream>
+#include <vector>
+#include "Predicate.h"
 
-class rule{
+using namespace std;
+
+class Rule{
     
 public:
     
-    rule();
-    ~rule();
+    Rule();
+    ~Rule();
+    void add_rule(Predicate rule_pred);
+    string toString();
+    void add_id(string id);
+    string id;
+    void clear();
+    void add_head(Predicate head);
+    string head;
+    
+    
     
 private:
+    
+    Predicate rule_head;
+    vector<Predicate> rule_body;
 
 };
 

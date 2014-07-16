@@ -16,29 +16,6 @@
 
 using namespace std;
 
-// function to return enum values as strings.
-string tokenizer(int token) {
-    switch (token) {
-        case SPACE:  return "SPACE";
-        case ERROR:  return "ERROR";
-        case STOP:  return "STOP";
-        case COMMA:  return "COMMA";
-        case PERIOD:  return "PERIOD";
-        case Q_MARK:  return "Q_MARK";
-        case LEFT_PAREN:  return "LEFT_PAREN";
-        case RIGHT_PAREN:  return "RIGHT_PAREN";
-        case COLON:  return "COLON";
-        case COLON_DASH:  return "COLON_DASH";
-        case SCHEMES:  return "SCHEMES";
-        case FACTS:  return "FACTS";
-        case RULES:  return "RULES";
-        case QUERIES:  return "QUERIES";
-        case ID:  return "ID";
-        case STRING:  return "STRING";
-        default:  return "ERROR";
-    }
-}
-
 int main (int argc, char *argv[])
 {
     ifstream inputFile("/Users/birdman/Documents/Project2/Project2/input.txt");
@@ -54,56 +31,49 @@ int main (int argc, char *argv[])
     
         //  Use getline to handle the input line by line which will make it easy to get the line numbers
     
-        LexAn *LA;
-        parser *PA;
-    
         while(getline(inputFile, line)) {
             
             linecount++;
         
-            LA = new LexAn(line, linecount);
-            
-            
+            LexAn LA(line, linecount);
             
             //  keeps reading in characters until the endline STOP token appears
             
             while (token != STOP) {
                 
                 tokencount++;
-                token = LA->lex();
+                token = LA.lex();
                 
                 if (token == STOP)
                     break; //do not show any end of line (STOP) tokens
                 else if(token == PLUS_CODE) {
                     outputFile << "Input Error on line " << linecount << endl;
-                    delete LA; //frees the memory blocks so there arent memory leaks.
                     return 0;
                 }
-                else if (token == ERROR || tokenizer(token) == "ERROR") {
+                else if (LA.get_token_type() == "ERROR") {
                     outputFile << "Input Error on line " << linecount << endl;
-                    delete LA; //frees the memory blocks so there arent memory leaks.
                     return 0;
                 }
                 else {
-                    outputFile << "(" << tokenizer(token) << ",\"" << LA->get_token_value() << "\"," << linecount << ")" << endl;
+                    outputFile << "(" << LA.get_token_type() << ",\"" << LA.get_token_value() << "\"," << LA.get_line_number() << ")" << endl;
                     
                     // add object to token vector
                     
-                    LA->get_token_type();
-                    LA->get_token_value();
-                    LA->get_line_number();
+                    //LA.get_token_type();
+                    //LA.get_token_value();
+                    //LA.get_line_number();
                     
-                    tokenlist.push_back(*LA);
+                    tokenlist.push_back(LA);
                 }
             }
             token = 0; //resets the token so that the getline while loop moves to the next line.
-            delete LA; //frees the memory blocks so there arent memory leaks.
         }
         outputFile << "Total Tokens = " << tokencount - linecount << endl;
-    PA = new parser(tokenlist);
+    
+    parser PA(tokenlist);
    
     try {
-        PA->parse();
+        PA.parse();
     }
     catch (string e){
         cout << "Failure!"<<endl;

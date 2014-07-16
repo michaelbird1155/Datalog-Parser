@@ -25,27 +25,29 @@ class LexAn
 {
 
 public:
-	char next_char;
-	int char_class;
-    int line;
-    string token_type;
+    
+	LexAn(string in="", int linecount = 0);
+    virtual ~LexAn();
+    string input;
+    int linecount;
+    int line = 0;
+    int char_class;
+    char next_char;
+    int token_type;
 	string lexeme;
     string tokenizer(int token);
     string get_token_value();
     string get_token_type();
-    void line_number(int linecount);
     int get_line_number();
     int lex();
     int rule1();
     int rule2();
     int rule3();
 	void new_input(string in);
-	LexAn(string in="", int linecount = 0);
-	virtual ~LexAn();
+	void toString();
 
 private:
-	string input;
-    
+	
     void add_char();
 	void get_char();
 
