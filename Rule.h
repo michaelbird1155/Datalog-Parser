@@ -29,8 +29,6 @@ public:
     void add_head(Predicate head);
     string head;
     
-    
-    
 private:
     
     Predicate rule_head;

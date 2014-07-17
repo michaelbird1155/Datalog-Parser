@@ -13,7 +13,7 @@
 #include "Predicate.h"
 #include "Rule.h"
 #include "Parameter.h"
-
+#include <set>
 
 class DataLog {
     
@@ -26,7 +26,7 @@ public:
     void add_to_facts(Predicate &facts);
     void add_to_rules(Rule &rules);
     void add_to_queries(Predicate &queries);
-    void add_to_domains(Parameter &domains);
+    void add_to_domains(string domain);
     string toString();
     Parameter Par;
     
@@ -36,7 +36,7 @@ private:
     vector<Predicate> facts_vector;
     vector<Predicate> queries_vector;
     vector<Rule> rules_vector;
-    vector<Parameter> domains_vector;
+    set<string> domains_list;
 
 };
 

@@ -13,66 +13,85 @@
 #include <iostream>
 
 
+parser::parser() {}
 
-parser::parser(vector<LexAn> &tokenlist): tokenlist(tokenlist) {
- 
-}
+parser::~parser() {}
 
-parser::~parser() { }
-
-void parser::parse() {
+void parser::parse(vector<Token> tokenlist_, char* filename) {
+    
+    tokenlist = tokenlist_;
     
     //get_token();
-    
     //current_token_value = tokenlist[index].get_token_value();
     //current_token_type = tokenlist[index].get_token_type();
     
+    ofstream outputFile;
+    outputFile.open(filename);
     
-    match("SCHEMES");
-    match("COLON");
-    schemelist();
-    match("FACTS");
-    match("COLON");
-    factlist();
-    match("RULES");
-    match("COLON");
-    rulelist();
-    match("QUERIES");
-    match("COLON");
-    querylist();
-    D.toString();
+    try {
+        
+        update_token();
+        match("SCHEMES");
+        match("COLON");
+        schemelist();
+        match("FACTS");
+        match("COLON");
+        update_token();
+        factlist();
+        match("RULES");
+        match("COLON");
+        rulelist();
+        match("QUERIES");
+        match("COLON");
+        querylist();
+        match("ENDFILE");
+        
+        if(index > tokenlist.size()) {
+            error();
+        }
+        cout << D.toString() << endl;
+        
+        outputFile << D.toString();
 
+    }
+    catch (string e){
+        outputFile << "Failure!" <<endl << "  " << e << endl;
+        cout << "Failure!" <<endl << "  " << e << endl;
+    }
+    outputFile.close();
 }
 
 void parser::get_token_type() {
     current_token_type = tokenlist[index].get_token_type();
 }
-string parser::get_token_value() {
-    current_token_value = tokenlist[index-1].get_token_value();
-    return current_token_value;
-    index++;index++;
+void parser::get_token_value() {
+    current_token_value = tokenlist[index].get_token_value();
+}
+void parser::get_token_line() {
+    current_token_line = tokenlist[index].get_token_line();
 }
 void parser::update_token() {
-    index++;
-    current_token_type = tokenlist[index].get_token_type();
+    get_token_type();
+    get_token_value();
+    get_token_line();
 }
 
 void parser::match( string match_token) {
-    get_token_type();
-    get_token_value();
-    index++;
-    if(match_token == current_token_type) {
-      // cout << current_token_value;
-        get_token_type();
-    }
-    else
+    
+    if(index > (tokenlist.size())) {
+        //return;
         error();
+    }
+    update_token();
+    if(match_token == current_token_type) {
+        index++;
+    }
+    else error();
 }
-
 
 void parser::error() {
     stringstream ss;
-    ss << "(" << tokenlist[index-1].get_token_type() << ",\"" << tokenlist[index-1].get_token_value() << "\"," << tokenlist[index-1].get_line_number() << ")";
+    ss << "(" << current_token_type << ",\"" << current_token_value << "\"," << current_token_line << ")";
     string error = ss.str();
     throw error;
 }
@@ -88,18 +107,21 @@ void parser::predicatelist() {
 void parser::predicate() {
     match("ID");
     P.clear();
-        P.add_id(get_token_value());
+        P.add_id(current_token_value);
+    update_token();
     match("LEFT_PAREN");
     parameterlist();
     match("RIGHT_PAREN");
-    
+    update_token();
     //add predicate to datalog program
 }
 void parser::parameterlist() {
+   // update_token();
     parameter();
+    update_token();
     if(current_token_type == "COMMA"){
         match("COMMA");
-        P.add_param(get_token_value());
+        P.add_param(current_token_value);
         parameterlist();
     }
     /*
@@ -109,25 +131,32 @@ void parser::parameterlist() {
     }*/
 }
 void parser::parameter() {
+    update_token();
     if (current_token_type == "ID") {
         match("ID");
-        P.add_param(get_token_value());
+        P.add_param(current_token_value);
+        
     }
     else if (current_token_type == "STRING") {
         match("STRING");
         P.add_param("'");
-        P.add_param(get_token_value());
+        P.add_param(current_token_value);
         P.add_param("'");
-        Par.add_domain(get_token_value());
+        
+        D.add_to_domains(current_token_value);
+        
+        //P.add_param(get_token_value());
+        //P.add_param("'");
+        //Par.add_param(get_token_value());
     }
-    else
-        match("ERROR");
+    //else
+      //  match("ERROR");
    
 }
 void parser::schemelist() {
     scheme();
     D.add_to_schemes(P);
-    get_token_type();
+    //get_token_type();
     if(current_token_type == "ID")
         schemelist();
 }
@@ -140,32 +169,37 @@ void parser::factlist() {
         factlist();
 }
 void parser::fact() {
-    predicate();
-    match("PERIOD");
-    D.add_to_facts(P);
-    D.add_to_domains(Par);
-    if (current_token_type == "ID") {
+    update_token();
+    if (current_token_type != "RULES") {
         predicate();
         match("PERIOD");
         D.add_to_facts(P);
-        D.add_to_domains(Par);
+        update_token();
+        if (current_token_type == "ID") {
+            predicate();
+            match("PERIOD");
+            D.add_to_facts(P);
+        }
     }
 }
 void parser::rulelist() {
-    rule();
-    match("PERIOD");
-    D.add_to_rules(R);
-    if(current_token_type == "ID")
-        rulelist();
-    else if(current_token_type == "COLON_DASH") {
-        match("COLON_DASH");
-        rulelist();
+    update_token();
+    if(current_token_type != "QUERIES") {
+        rule();
+        match("PERIOD");
+        D.add_to_rules(R);
+        if(current_token_type == "ID")
+            rulelist();
+        else if(current_token_type == "COLON_DASH") {
+            match("COLON_DASH");
+            rulelist();
+        }
+        else if(current_token_type == "COMMA") {
+            match("COMMA");
+            rulelist();
+        }
+        else {}
     }
-    else if(current_token_type == "COMMA") {
-        match("COMMA");
-        rulelist();
-    }
-    else {}
 }
 void parser::rule() {
     
@@ -176,18 +210,14 @@ void parser::rule() {
     predicatelist();
 }
 void parser::querylist() {
-    query();
-    D.add_to_queries(P);
-    if(current_token_type == "ID")
-        querylist();
-}
+    if(index < tokenlist.size()) {
+        query();
+        D.add_to_queries(P);
+        if(current_token_type == "ID")
+            querylist();
+        }
+    }
 void parser::query() {
     predicate();
     match("Q_MARK");
-    D.add_to_queries(P);
-    if (current_token_type == "ID") {
-        predicate();
-        match("Q_MARK");
-        D.add_to_queries(P);
-    }
 }

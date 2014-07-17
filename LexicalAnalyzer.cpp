@@ -10,24 +10,51 @@
 
 #include "LexicalAnalyzer.h"
 
-//  initialize the constructor
+using namespace std;
 
-LexAn::LexAn(string in, int linecount) : input(in), line(linecount), char_class(ERROR), next_char(' '), lexeme("")
-{
-	get_char();
+//  initialize the constructor
+LexAn::LexAn(){};
+LexAn::~LexAn(){};
+
+vector<Token> LexAn::lex(char* filename) {
+   
+    ifstream inputFile;
+    inputFile.open(filename);
+
+    
+    while(getline(inputFile, line)) {
+        
+        new_input(line);
+        
+        linenumber++;
+        
+        while(char_class != STOP) {
+            
+            get_token();
+            
+            if (token_type == STOP )
+               // push_token();
+                break; //do not show any end of line (STOP) tokens
+            
+            push_token();
+            //cout << tokenlist.back().toString() << endl;
+           // get_token();
+        }
+    }
+    tokenlist.push_back(Token("ENDFILE","Endfile",linenumber++));
+    inputFile.close();
+    return tokenlist;
 }
 
 //  deconstruct the constructor
 
-LexAn::~LexAn()
-{
-}
+
 
 // gets the new input char
 
 void LexAn::new_input(string in)
 {
-	input=in;
+	input=line;
 	get_char();
     
 }
@@ -89,7 +116,7 @@ void LexAn::get_char()
             char_class = DASH;
             break;
         case '#':
-            char_class = COMMENT;
+            char_class = STOP;
             break;
         case 39:
             char_class = QUOTATION;
@@ -178,9 +205,8 @@ int LexAn::rule3() {
     }
 }
 
-int LexAn::lex()
-{
-    
+int LexAn::get_token() {
+    //get_char();
     lexeme="";
     
     while (char_class == SPACE)   //  moves to the next character if there is a space. Does not add to the lexeme
@@ -335,6 +361,11 @@ string LexAn::get_token_value() {
     return lexeme;
 }
 int LexAn::get_line_number() {
-    return line;
+    return linenumber;
+}
+void LexAn::push_token() {
+    
+    tokenlist.push_back(Token(get_token_type(),get_token_value(),get_line_number()));
+    //cout << tokenlist.back().toString() << endl;
 }
 

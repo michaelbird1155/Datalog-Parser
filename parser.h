@@ -17,6 +17,7 @@
 #include "DatalogProgram.h"
 #include "Rule.h"
 #include "Parameter.h"
+#include "Token.h"
 
 using namespace std;
 
@@ -58,21 +59,23 @@ class parser {
     
 public:
 
-	parser(vector<LexAn> &tokenlist);
+	parser();
 	~parser();
-    void parse();
+    void parse(vector<Token> tokenlist, char* filename);
     void get_token_type();
-    string get_token_value();
+    void get_token_value();
+    void get_token_line();
     void update_token();
     string current_token_type;
     string current_token_value;
-    int index=0;
+    int current_token_line;
+    unsigned int index=0;
     Predicate P;
     DataLog D;
     Rule R;
     Parameter Par;
+    Token T;
 
-    
 private:
 
     void error();
@@ -89,8 +92,8 @@ private:
     void predicate();
     void parameterlist();
     void parameter();
-
-    vector<LexAn> &tokenlist;
+    
+    vector<Token> tokenlist;
 };
 
 #endif /* defined(__Project2__parser__) */

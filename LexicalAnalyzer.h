@@ -11,6 +11,9 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
+#include <fstream>
+#include "Token.h"
 
 
 using namespace std;
@@ -26,30 +29,34 @@ class LexAn
 
 public:
     
-	LexAn(string in="", int linecount = 0);
-    virtual ~LexAn();
+	LexAn();
+    ~LexAn();
     string input;
-    int linecount;
-    int line = 0;
+    string line;
     int char_class;
     char next_char;
     int token_type;
 	string lexeme;
-    string tokenizer(int token);
+   // string tokenizer(int token);
     string get_token_value();
     string get_token_type();
     int get_line_number();
-    int lex();
+    int get_token();
+    string lex();
     int rule1();
     int rule2();
     int rule3();
 	void new_input(string in);
-	void toString();
+	//void toString();
+    void push_token();
+    int linenumber = 0;
+    vector<Token> lex(char* filename);
 
 private:
 	
     void add_char();
 	void get_char();
+    vector<Token> tokenlist;
 
 
 };

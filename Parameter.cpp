@@ -12,18 +12,17 @@
 Parameter::Parameter() {}
 Parameter::~Parameter() {}
 
-string Parameter::add_domain(string domain) {
-    domains.push_back(domain);
-    return domain;
+void Parameter::add_param(string param) {
+    domains.push_back(param);
 }
 
 string Parameter::toString() {
     stringstream ss;
-    ss << "Domain(";
-    ss << domains.size() << "):" << endl;
     for(auto domain : domains)
-        ss << "   '" << domain << "'"<<endl;
-    
-    //cout << ss.str();
+        ss << domain;
+   // cout << ss.str();
     return ss.str();
+}
+void Parameter::clear() {
+    domains.clear();
 }

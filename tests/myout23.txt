@@ -1,0 +1,12 @@
+Success!
+Schemes(1):
+  bob(A,B)
+Facts(1):
+  bob('4','2')
+Rules(1):
+  bob(A,B) :- bob(B,A)
+Queries(1):
+  bob(X,Y)
+Domain(2):
+  '2'
+  '4'

@@ -4,7 +4,7 @@ reset
 
 name=${PWD##*/}
 
-for file in `ls *.hpp`; do cp "$file" "tests/${file/.hpp/.h}"; done
+for file in `ls *.h`; do cp "$file" "tests/$file"; done
 cp *.cpp tests/
 
 cd tests
@@ -25,21 +25,21 @@ else
 fi
 
 for file in `ls in*.txt`; do 
-    if valgrind -q --leak-check=full ./$name "$file" "${file/in/myout}"; then
+    if ./$name "$file" "${file/in/myout}"; then
         echo "Valgrind passed on $file"
     fi
 done
 
-#for file in `ls out*.txt`; do diff -y --suppress-common-lines "${file/out/myout}" "$file"; done
+for file in `ls out*.txt`; do diff -y --suppress-common-lines "${file/out/output}" "$file"; done
 
-for file in `ls out*.txt`; do 
-    if diff -q "$file" "${file/out/myout}"; then
-        echo "Expected output for file $file"
-    else
-        (gvim -d "$file" "${file/out/myout}" &> /dev/null &)
-        break
-    fi
-done
+#for file in `ls out*.txt`; do
+#    if diff -q "$file" "${file/out/output}"; then
+#        echo "Expected output for file $file"
+#    else
+#        (gvim -d "$file" "${file/out/output}" &> /dev/null &)
+#        break
+#    fi
+#done
 
 zip -q $name.zip *.cpp *.h
 

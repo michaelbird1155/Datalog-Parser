@@ -26,11 +26,12 @@ void DataLog::add_to_rules(Rule &rules) {
 void DataLog::add_to_queries(Predicate &queries) {
     queries_vector.push_back(queries);
 }
-void DataLog::add_to_domains(Parameter &domains) {
-    domains_vector.push_back(domains);
+void DataLog::add_to_domains(string domain) {
+    domains_list.insert(domain);
 }
 string DataLog::toString() {
     stringstream final;
+    final << "Success!" << endl;
     final << "Schemes(";
     final << schemes_vector.size() << "):" << endl;
     for(auto schemes : schemes_vector)
@@ -46,13 +47,14 @@ string DataLog::toString() {
         final << "  " << rules.toString()<< endl;
     
     final << "Queries(";
-    final << queries_vector.size()-1 << "):" << endl;
-    queries_vector.pop_back();
+    final << queries_vector.size() << "):" << endl;
+    //queries_vector.pop_back();
     for(auto queries : queries_vector)
         final << "  " << queries.toString() <<endl;
-    final << domains_vector.back().toString() << endl;
-   // final << Par.toString();
-    cout << final.str();
+    final << "Domain(";
+    final << domains_list.size() << "):" << endl;
+    for(auto domain : domains_list)
+        final << "  '" << domain << "'" << endl;
     return final.str();
 }
 

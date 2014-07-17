@@ -13,6 +13,7 @@
 
 #include <iostream>
 #include <vector>
+#include "Parameter.h"
 
 using namespace std;
 
@@ -27,17 +28,15 @@ public:
     
     string id;
     string toString();
-    string add_id(string id);
-    string add_param(string param);
+    void add_id(string id);
+    void add_param(string param);
     void clear();
+    Parameter Par;
     
 private:
     
     string pred_value;
-    vector<string> parameter;
-   // vector<string> domain;
-    
-    
+    vector<Parameter> parameter;
     
 };
 

@@ -22,7 +22,7 @@ public:
     ~Parameter();
     
     string toString();
-    string add_domain(string domain);
+    void add_param(string param);
     void clear();
     
 private:

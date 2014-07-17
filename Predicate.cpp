@@ -13,27 +13,25 @@ Predicate::Predicate() {}
 
 Predicate::~Predicate() {}
 
-string Predicate::add_id(string _id) {
+void Predicate::add_id(string _id) {
     id = _id;
-   // cout << _id << endl;
-    return _id;
 }
 
-string Predicate::add_param(string param) {
-    parameter.push_back(param);
-    return param;
+void Predicate::add_param(string param) {
+    Par.add_param(param);
 }
+
 string Predicate::toString() {
     stringstream ss;
     ss << id << "(";
+    ss << Par.toString();
     for(auto param : parameter)
-        ss << param;
+        ss << "fdsa";
     ss << ")";
     return ss.str();
 }
+
 void Predicate::clear() {
-    
     id = "";
-    parameter.clear();
-    
+    Par.clear();
 }
