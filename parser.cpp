@@ -144,11 +144,13 @@ void parser::parameter() {
         P.add_param("'");
         
         D.add_to_domains(current_token_value);
-        
+    }
+    else
+        error();
         //P.add_param(get_token_value());
         //P.add_param("'");
         //Par.add_param(get_token_value());
-    }
+    
     //else
       //  match("ERROR");
    
@@ -164,30 +166,26 @@ void parser::scheme() {
     predicate();
 }
 void parser::factlist() {
+   if (current_token_type != "RULES") {
     fact();
-    if(current_token_type == "ID")
-        factlist();
+    factlist();
+   }
 }
 void parser::fact() {
     update_token();
-    if (current_token_type != "RULES") {
+    
         predicate();
         match("PERIOD");
         D.add_to_facts(P);
         update_token();
-        if (current_token_type == "ID") {
-            predicate();
-            match("PERIOD");
-            D.add_to_facts(P);
-        }
     }
-}
 void parser::rulelist() {
     update_token();
     if(current_token_type != "QUERIES") {
         rule();
         match("PERIOD");
         D.add_to_rules(R);
+        update_token();
         if(current_token_type == "ID")
             rulelist();
         else if(current_token_type == "COLON_DASH") {
@@ -213,6 +211,7 @@ void parser::querylist() {
     if(index < tokenlist.size()) {
         query();
         D.add_to_queries(P);
+        update_token();
         if(current_token_type == "ID")
             querylist();
         }
